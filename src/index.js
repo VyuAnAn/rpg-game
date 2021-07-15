@@ -1,13 +1,41 @@
 import './index.scss';
+import ClientGame from './client/ClientGame';
+
+window.addEventListener('load', () => {
+  ClientGame.init({ tagId: 'game' });
+});
+
+/*
 import VyuWalk from './assets/Female-4-Walk.png';
+import terrainAtlas from './assets/terrain.png';
+import worldCfg from './configs/world.json';
+import sprites from './configs/sprites.js';
 
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
-const canvasField = document.getElementById('game_field');
-const ctxf = canvasField.getContext('2d');
 
 const spriteWidth = 48;
 const spriteHeight = 48;
+
+const terrain = document.createElement('img');
+terrain.src = terrainAtlas;
+
+terrain.addEventListener('load', () => {
+//    console.log(worldCfg);
+//    console.log(sprites);
+    const {map} = worldCfg;
+    map.forEach((cfgRow, y) => {
+        cfgRow.forEach((cfgCell, x) => {
+//            console.log(cfgCell[0]);
+//            console.log(sprites.terrain[cfgCell[0]].frames);
+    const [sX, sY, sW, sH] = sprites.terrain[cfgCell[0]].frames[0];
+    ctx.drawImage(terrain, sX, sY, sW, sH, x * spriteWidth, y * spriteHeight, spriteWidth, spriteHeight);
+        });
+    })
+});
+
+*/
+/*
 const shots = 3; // кадры.
 let cycle = 0; // цикл кадра
 let bottomPressed = false;
@@ -70,26 +98,27 @@ document.addEventListener('keyup', keyUpHandler);
 const img = document.createElement('img');
 img.src = VyuWalk;
 
-ctxf.beginPath();
-ctxf.moveTo(50, 50);
-ctxf.lineTo(550, 50);
-ctxf.stroke();
-ctxf.closePath();
+//ctxf.beginPath();
+//ctxf.moveTo(50, 50);
+//ctxf.lineTo(550, 50);
+//ctxf.stroke();
+//ctxf.closePath();
+//
+//ctxf.beginPath();
+//ctxf.strokeRect(150, 150, 300, 300);
+//ctxf.arc(300, 300, 100, 0, 2 * Math.PI);
+//ctxf.stroke();
+//ctxf.closePath();
+//
+//ctxf.beginPath();
+//ctxf.moveTo(50, 550);
+//ctxf.lineTo(550, 550);
+//ctxf.stroke();
+//ctxf.closePath();
 
-ctxf.beginPath();
-ctxf.strokeRect(150, 150, 300, 300);
-ctxf.arc(300, 300, 100, 0, 2 * Math.PI);
-ctxf.stroke();
-ctxf.closePath();
 
-ctxf.beginPath();
-ctxf.moveTo(50, 550);
-ctxf.lineTo(550, 550);
-ctxf.stroke();
-ctxf.closePath();
-
-img.addEventListener('load', () => {
-  setInterval(() => {
+function walk(timestamp) {
+//    console.log("timestamp", timestamp);
     if (bottomPressed) {
       if (pY >= 550) {
         pY = 550;
@@ -139,5 +168,10 @@ img.addEventListener('load', () => {
       spriteWidth,
       spriteHeight,
     ); // ширина высота изобржения
-  }, 120);
-});
+
+    window.requestAnimationFrame(walk);
+}
+img.addEventListener('load', () => {
+    window.requestAnimationFrame(walk);
+//    setInterval(() => { }, 120);
+});*/
