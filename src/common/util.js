@@ -1,4 +1,4 @@
-function clamp(xx, fromX, toX) {
+export function clamp(xx, fromX, toX) {
   let x = xx;
   if (x < fromX) {
     x = fromX;
@@ -10,4 +10,15 @@ function clamp(xx, fromX, toX) {
   return x;
 }
 
-export default clamp;
+export function animateEx(dx, startTime, currentTime, speed, looped = false) {
+  const diff = currentTime - startTime;
+  let time = (speed && diff / speed) || 0;
+
+  if (looped) {
+    time %= 1;
+  } else if (time > 1) {
+    time = 1;
+  }
+
+  return { offset: dx * time, progress: time };
+}

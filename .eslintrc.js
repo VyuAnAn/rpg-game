@@ -14,6 +14,12 @@ module.exports = {
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
     "prefer-destructuring": ["error", {"object": true, "array": false}],
-    "arrow-body-style": ["error", "as-needed"]
+    "arrow-body-style": ["error", "as-needed", { "requireReturnForObjectLiteral": true }],
+    "no-bitwise": ["error", { "int32Hint": true }],
+    "no-param-reassign": ["error", { "props": false }],
+    "no-return-assign": "error",
+    "max-len": ["error", { "code": 120 }],
+    "class-methods-use-this": ["error", { "exceptMethods": ["getStateByValue"] }],
+    "implicit-arrow-linebreak": "error"
   },
 };
