@@ -1,39 +1,61 @@
-class ClientWorld {
+import ClientCell from './ClientCell';
+import PositionedObject from '../common/PositionedObject';
+
+class ClientWorld extends PositionedObject {
   constructor(game, engine, levelCfg) {
+    super();
+
+    const worldHeight = levelCfg.map.length;
+    const worldWidth = levelCfg.map[0].length;
+    const cellSize = engine.canvas.height / levelCfg.camera.height;
+
     Object.assign(this, {
       game,
       engine,
       levelCfg,
-      height: levelCfg.map.length,
-      width: levelCfg.map[0].length,
+      height: worldHeight * cellSize,
+      width: worldWidth * cellSize,
+      worldHeight,
+      worldWidth,
+      cellWidth: cellSize,
+      cellHeight: cellSize,
+      world: [],
     });
     //    console.log(this);
   }
 
   init() {
     //        console.log('MAP INIT');
-    this.levelCfg.map.forEach((cfgRow, y) => {
-      cfgRow.forEach((cfgCell, x) => {
-        //                console.log(cfgCell);
-        //                console.log('terrain', this.engine.sprites);
-        this.engine.renderSpriteFrame({
-          sprite: ['terrain', cfgCell[0]],
-          frame: 0,
-          x: x * this.levelCfg.camera.width,
-          y: y * this.levelCfg.camera.height,
-          w: this.levelCfg.camera.width,
-          h: this.levelCfg.camera.height,
+    const { levelCfg, world, worldWidth, worldHeight } = this;
+
+    for (let row = 0; row < worldHeight; row++) {
+      for (let col = 0; col < worldWidth; col++) {
+        if (!world[row]) {
+          world[row] = [];
+        }
+
+        world[row][col] = new ClientCell({
+          world: this,
+          cellCol: col,
+          cellRow: row,
+          cellCfg: levelCfg.map[row][col],
         });
-      });
-    });
-    //        this.engine.renderSpriteFrame({
-    //            sprite: ['terrain', 'grass'],
-    //            frame: 0,
-    //            x: 0,
-    //            y: 0,
-    //            w: 48,
-    //            h: 48,
-    //        });
+      }
+    }
+  }
+
+  render(time) {
+    const { world, worldWidth, worldHeight } = this;
+
+    for (let row = 0; row < worldHeight; row++) {
+      for (let col = 0; col < worldWidth; col++) {
+        world[row][col].render(time);
+      }
+    }
+  }
+
+  cellAt(col, row) {
+    return this.world[row] && this.world[row][col];
   }
 }
 
