@@ -28,7 +28,7 @@ class ClientCell extends PositionedObject {
     this.objects = cellCfg.map((layer, layerId) => {
       const l = layer.map((objCfg) => new ClientGameObject({ cell: this, objCfg, layerId }));
       return l;
-      });
+    });
   }
 
   render(time, layerId) {
