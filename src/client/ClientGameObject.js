@@ -11,10 +11,6 @@ class ClientGameObject extends MovableObject {
     const gameObjs = map.game.gameObjects;
     const objCfg = typeof cfg.objCfg === 'string' ? { type: cfg.objCfg } : cfg.objCfg;
 
-    if (objCfg.player) {
-      map.game.setPlayer(this);
-    }
-
     Object.assign(
       this,
       {

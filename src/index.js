@@ -1,8 +1,14 @@
 import './index.scss';
 import ClientGame from './client/ClientGame';
 
+const $form = document.querySelector('.start-game');
+
 window.addEventListener('load', () => {
-  ClientGame.init({ tagId: 'game' });
+  $form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    ClientGame.init({ tagId: 'game', playerName: document.getElementById('name').value });
+    $form.remove();
+  });
 });
 
 /*
