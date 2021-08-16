@@ -40,7 +40,7 @@ class ClientCell extends PositionedObject {
           ObjectClass = ClientGameObject;
         }
 
-        return new ObjectClass({ cell: this, objCfg, layerId });
+        return new ObjectClass({ cell: this, objCfg, layerId, playerName: this.world.game.cfg?.playerName });
       });
 
       return l;

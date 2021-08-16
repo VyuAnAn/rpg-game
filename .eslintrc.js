@@ -22,5 +22,6 @@ module.exports = {
     "class-methods-use-this": ["error", { "exceptMethods": ["getStateByValue"] }],
     "implicit-arrow-linebreak": "error",
     "prefer-object-spread": "error",
+    "eol-last": ["error", "always"],
   },
 };
