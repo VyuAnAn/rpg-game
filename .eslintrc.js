@@ -9,7 +9,7 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
-    "object-curly-newline": ["error", { "multiline": true, "minProperties": 10 }],
+    "object-curly-newline": ["error", { "multiline": true, "minProperties": 15 , "consistent": true }],
     "no-unused-expressions": ["error", { "allowTaggedTemplates": true }],
     "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
     "no-unused-expressions": ["error", { "allowShortCircuit": true }],
@@ -20,6 +20,7 @@ module.exports = {
     "no-return-assign": "error",
     "max-len": ["error", { "code": 120 }],
     "class-methods-use-this": ["error", { "exceptMethods": ["getStateByValue"] }],
-    "implicit-arrow-linebreak": "error"
+    "implicit-arrow-linebreak": "error",
+    "prefer-object-spread": "error",
   },
 };
