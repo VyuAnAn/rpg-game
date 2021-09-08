@@ -1,183 +1,71 @@
+import { io } from 'socket.io-client';
 import './index.scss';
 import ClientGame from './client/ClientGame';
-
-const $form = document.querySelector('.start-game');
+import { getTime } from './common/util';
 
 window.addEventListener('load', () => {
-  $form.addEventListener('submit', function (event) {
+  const socket = io('https://jsprochat.herokuapp.com');
+  const $startGame = document.querySelector('.start-game');
+  const $nameForm = document.getElementById('nameForm');
+  const $inputName = document.getElementById('name');
+  const $message = document.querySelector('.message');
+
+  const $chatWrap = document.querySelector('.chat-wrap');
+  const $form = document.getElementById('form');
+  const $input = document.getElementById('input');
+
+  const submitName = (event) => {
     event.preventDefault();
-    ClientGame.init({ tagId: 'game', playerName: document.getElementById('name').value });
-    $form.remove();
+
+    if ($inputName.value) {
+      ClientGame.init({
+        tagId: 'game',
+        playerName: $inputName.value,
+      });
+
+      socket.emit('start', $inputName.value, $inputName.value);
+
+      $chatWrap.style.display = 'block';
+      $nameForm.removeEventListener('submit', submitName);
+      $startGame.remove();
+    }
+  };
+  $nameForm.addEventListener('submit', submitName);
+
+  $form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    if ($input.value) {
+      socket.emit('chat message', $input.value);
+      $input.value = '';
+    }
+  });
+
+  socket.on('chat connection', (data) => {
+    $message.insertAdjacentHTML('beforeend', `<p><strong>${getTime(data.time)}</strong> - ${data.msg}</p>`);
+  });
+
+  socket.on('chat disconnect', (data) => {
+    $message.insertAdjacentHTML('beforeend', `<p><strong>${getTime(data.time)}</strong> - ${data.msg}</p>`);
+  });
+
+  socket.on('chat message', (data) => {
+    console.log('chat message', socket.id, data);
+    if (socket.id === data.id) {
+      $message.insertAdjacentHTML(
+        'beforeend',
+        `<p style="color: #c8a2c8"><strong>${getTime(data.time)}</strong> - ${data.name}: ${data.msg}</p>`,
+      );
+    } else {
+      $message.insertAdjacentHTML(
+        'beforeend',
+        `<p><strong>${getTime(data.time)}</strong> - ${data.name}: ${data.msg}</p>`,
+      );
+    }
+  });
+
+  socket.on('chat online', (data) => {
+    console.log('chat online', data);
+    $message.insertAdjacentHTML('beforeend', `<p><strong>${getTime(data.time)}</strong> Online: ${data.online}</p>`);
   });
 });
-
-/*
-import VyuWalk from './assets/Female-4-Walk.png';
-import terrainAtlas from './assets/terrain.png';
-import worldCfg from './configs/world.json';
-import sprites from './configs/sprites.js';
-
-const canvas = document.getElementById('game');
-const ctx = canvas.getContext('2d');
-
-const spriteWidth = 48;
-const spriteHeight = 48;
-
-const terrain = document.createElement('img');
-terrain.src = terrainAtlas;
-
-terrain.addEventListener('load', () => {
-//    console.log(worldCfg);
-//    console.log(sprites);
-    const {map} = worldCfg;
-    map.forEach((cfgRow, y) => {
-        cfgRow.forEach((cfgCell, x) => {
-//            console.log(cfgCell[0]);
-//            console.log(sprites.terrain[cfgCell[0]].frames);
-    const [sX, sY, sW, sH] = sprites.terrain[cfgCell[0]].frames[0];
-    ctx.drawImage(terrain, sX, sY, sW, sH, x * spriteWidth, y * spriteHeight, spriteWidth, spriteHeight);
-        });
-    })
-});
-
-*/
-/*
-const shots = 3; // кадры.
-let cycle = 0; // цикл кадра
-let bottomPressed = false;
-let topPressed = false;
-let leftPressed = false;
-let rightPressed = false;
-let direct = 0;
-let pX = 270;
-let pY = 270;
-
-function keyDownHandler(event) {
-  switch (event.key) {
-    case 'Down':
-    case 'ArrowDown':
-      bottomPressed = true;
-      break;
-    case 'Up':
-    case 'ArrowUp':
-      topPressed = true;
-      break;
-    case 'Left':
-    case 'ArrowLeft':
-      leftPressed = true;
-      break;
-    case 'Right':
-    case 'ArrowRight':
-      rightPressed = true;
-      break;
-    default:
-      break;
-  }
-}
-
-function keyUpHandler(event) {
-  switch (event.key) {
-    case 'Down':
-    case 'ArrowDown':
-      bottomPressed = false;
-      break;
-    case 'Up':
-    case 'ArrowUp':
-      topPressed = false;
-      break;
-    case 'Left':
-    case 'ArrowLeft':
-      leftPressed = false;
-      break;
-    case 'Right':
-    case 'ArrowRight':
-      rightPressed = false;
-      break;
-    default:
-      break;
-  }
-}
-
-document.addEventListener('keydown', keyDownHandler);
-document.addEventListener('keyup', keyUpHandler);
-
-const img = document.createElement('img');
-img.src = VyuWalk;
-
-//ctxf.beginPath();
-//ctxf.moveTo(50, 50);
-//ctxf.lineTo(550, 50);
-//ctxf.stroke();
-//ctxf.closePath();
-//
-//ctxf.beginPath();
-//ctxf.strokeRect(150, 150, 300, 300);
-//ctxf.arc(300, 300, 100, 0, 2 * Math.PI);
-//ctxf.stroke();
-//ctxf.closePath();
-//
-//ctxf.beginPath();
-//ctxf.moveTo(50, 550);
-//ctxf.lineTo(550, 550);
-//ctxf.stroke();
-//ctxf.closePath();
-
-
-function walk(timestamp) {
-//    console.log("timestamp", timestamp);
-    if (bottomPressed) {
-      if (pY >= 550) {
-        pY = 550;
-      } else {
-        pY += 10;
-      }
-      cycle = (cycle + 1) % shots;
-      direct = 0;
-    }
-    if (topPressed) {
-      if (pY <= 0) {
-        pY = 0;
-      } else {
-        pY -= 10;
-      }
-      cycle = (cycle + 1) % shots;
-      direct = 3;
-    }
-    if (leftPressed) {
-      if (pX <= 0) {
-        pX = 0;
-      } else {
-        pX -= 10;
-      }
-      cycle = (cycle + 1) % shots;
-      direct = 1;
-    }
-    if (rightPressed) {
-      if (pX >= 550) {
-        pX = 550;
-      } else {
-        pX += 10;
-      }
-      cycle = (cycle + 1) % shots;
-      direct = 2;
-    }
-
-    ctx.clearRect(0, 0, 600, 600);
-    ctx.drawImage(
-      img,
-      cycle * spriteWidth,
-      direct * spriteHeight,
-      spriteWidth,
-      spriteHeight,
-      pX,
-      pY, // где начнем рисовать
-      spriteWidth,
-      spriteHeight,
-    ); // ширина высота изобржения
-
-    window.requestAnimationFrame(walk);
-}
-img.addEventListener('load', () => {
-    window.requestAnimationFrame(walk);
-//    setInterval(() => { }, 120);
-});*/
